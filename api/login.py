@@ -25,12 +25,10 @@ def SignUp(request):
         account = Account(username = username , password = password , role = "user" , group = group)
         account.save()
         return HttpResponse(
-            content=json.dumps({"group_id": str(group.id)}),
+            content=json.dumps({"group_id": str(group.id),"isadmin":False}),
             content_type="application/json",
             status=200,
         )
-    
-
 
 @require_http_methods(["POST"])
 def SignIn(request):
@@ -40,9 +38,18 @@ def SignIn(request):
 
     try:
         account = Account.objects.get(username = username , password = password)
+
+        if account.role == 'admin' :
+            return HttpResponse(
+            content=json.dumps({"group_id": 'admin',"isadmin":True}),
+            content_type="application/json",
+            status=200,
+            )
+
         group = account.group
+
         return HttpResponse(
-            content=json.dumps({"group_id": str(group.id)}),
+            content=json.dumps({"group_id": str(group.id),"isadmin":False}),
             content_type="application/json",
             status=200,
         )

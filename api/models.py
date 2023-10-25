@@ -7,7 +7,7 @@ class Account(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=30,default='')
     password = models.CharField(max_length=30,default='')
-    group = models.ForeignKey('Group',on_delete=models.CASCADE)
+    group = models.ForeignKey('Group',on_delete=models.CASCADE,null=True)
     role = models.CharField(max_length=20,default='')
 
 
