@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from .models import *
+from ..models import *
 import json
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.http import require_http_methods
@@ -16,11 +16,11 @@ def SignUp(request):
         return HttpResponse(
             content=json.dumps({"error": "This username is exist"}),
             content_type="application/json",
-            status=400,
+            status=200,
         )
     
     except ObjectDoesNotExist :
-        group = Group(type = type)
+        group = Group(name = username , type = type)
         group.save()
         account = Account(username = username , password = password , role = "user" , group = group)
         account.save()
@@ -41,7 +41,7 @@ def SignIn(request):
 
         if account.role == 'admin' :
             return HttpResponse(
-            content=json.dumps({"group_id": 'admin',"isadmin":True}),
+            content=json.dumps({"group_id": 'admin',"isadmin":str(account.id)}),
             content_type="application/json",
             status=200,
             )
@@ -58,5 +58,5 @@ def SignIn(request):
         return HttpResponse(
             content=json.dumps({"error": "Wrong answer or password"}),
             content_type="application/json",
-            status=400,
+            status=200,
         )

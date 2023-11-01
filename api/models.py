@@ -14,6 +14,7 @@ class Account(models.Model):
 
 class Group(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=30,default='')
     type = models.CharField(max_length=30,default='')
     number_of_members = models.IntegerField(default=0)
     donate = models.FloatField(default=0)
