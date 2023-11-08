@@ -21,9 +21,11 @@ def admin_get_groups(request):
 
         groups = Group.objects.all().values()
         groups = list(groups)
-
+        for group in groups:
+            group['id'] = str(group['id'])
+        
         return HttpResponse(
-            content=json.dumps({"groups":str(groups)}),
+            content=json.dumps({"groups":groups}),
             content_type="application/json",
             status=200,
         )
@@ -43,7 +45,6 @@ def admin_edit_groups(request):
     group_id = request_body["group_id"]
     name = request_body["name"]
     type  = request_body["type"]
-    donate = request_body["donate"]
     
     try:
         admin = Account.objects.get(id=auth)
@@ -59,7 +60,6 @@ def admin_edit_groups(request):
             group = Group.objects.get(id=group_id)
             group.name = name
             group.type = type
-            group.donate = donate
             group.save()
             return HttpResponse(
             content=json.dumps("Successful"),

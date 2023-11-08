@@ -17,7 +17,6 @@ class Group(models.Model):
     name = models.CharField(max_length=30,default='')
     type = models.CharField(max_length=30,default='')
     number_of_members = models.IntegerField(default=0)
-    donate = models.FloatField(default=0)
 
 
 
@@ -55,6 +54,17 @@ class Room(models.Model):
     area = models.FloatField(default=0)
     price = models.FloatField(default=0)
     description = models.CharField(max_length=200,default='')
+    group = models.OneToOneField(Group,on_delete=models.SET_NULL,null=True)
+
+
+
+class Bill(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    date = models.DateField()
+    group = models.ForeignKey(Group,on_delete=models.CASCADE,default=None)
+    room = models.ForeignKey(Room,on_delete=models.CASCADE,default=None)
+    room_bill = models.FloatField(default=0)
     electric_bill = models.FloatField(default=0)
     water_bill = models.FloatField(default=0)
-    group = models.OneToOneField(Group,on_delete=models.SET_NULL,null=True)
+    donate = models.FloatField(default=0)
+    paid = models.BooleanField(default=False)
