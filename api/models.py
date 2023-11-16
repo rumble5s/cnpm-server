@@ -40,14 +40,6 @@ class Transport(models.Model):
 
 
 
-class Register(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    group = models.ForeignKey(Group,on_delete=models.CASCADE)
-    room = models.ForeignKey('Room',on_delete=models.CASCADE)
-    request = models.CharField(max_length=30,default='')
-
-
-
 class Room(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=30,default='')
@@ -58,11 +50,19 @@ class Room(models.Model):
 
 
 
+class Register(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    group = models.ForeignKey(Group,on_delete=models.CASCADE)
+    room = models.ForeignKey(Room,on_delete=models.CASCADE)
+    request = models.CharField(max_length=30,default='')
+
+
+
 class Bill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     date = models.DateField()
-    group = models.ForeignKey(Group,on_delete=models.CASCADE,default=None)
-    room = models.ForeignKey(Room,on_delete=models.CASCADE,default=None)
+    group = models.ForeignKey(Group,on_delete=models.CASCADE)
+    room = models.ForeignKey(Room,on_delete=models.CASCADE)
     room_bill = models.FloatField(default=0)
     electric_bill = models.FloatField(default=0)
     water_bill = models.FloatField(default=0)
