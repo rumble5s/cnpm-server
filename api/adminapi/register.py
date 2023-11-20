@@ -97,7 +97,8 @@ def admin_accept_register(request):
         room.group = None
         room.save()
 
-    register.delete()
+    register.status = "Accepted"
+    
     return HttpResponse(
             content=json.dumps("Successful"),
             content_type="application/json",
