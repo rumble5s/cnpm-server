@@ -20,3 +20,8 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
+
+## Postman
+```
+https://bold-space-281399.postman.co/workspace/CNPM~16a7248a-3dbb-46c7-8eab-149f254d47f5/collection/29716438-42dce0b9-19f3-4f1d-a14c-2f2a35396d32?action=share&creator=29716438
+```
