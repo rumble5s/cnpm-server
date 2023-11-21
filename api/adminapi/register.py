@@ -114,7 +114,7 @@ def admin_accept_register(request):
     
 
 @require_http_methods(["POST"])
-def admin_denie_register(request):
+def admin_deny_register(request):
     request_body = json.loads(request.body)
     auth = request_body["auth"]
     register_id = request_body["register_id"]
