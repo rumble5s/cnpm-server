@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('admin_show_registers/',admin_show_registers),
     path('admin_accept_register/',admin_accept_register),
+    path('admin_deny_register/',admin_deny_register),
 
     # User api
     path('add_person/',add_person),
