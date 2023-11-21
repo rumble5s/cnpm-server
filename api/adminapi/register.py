@@ -70,6 +70,13 @@ def admin_accept_register(request):
             status=200,
         )
     
+    if register.status != "pending" :
+        return HttpResponse(
+            content=json.dumps({"error": "This register is not pending"}),
+            content_type="application/json",
+            status=200,
+        )
+    
     group = register.group
     room = register.room
 
@@ -105,3 +112,50 @@ def admin_accept_register(request):
             status=200,
         )
     
+
+@require_http_methods(["POST"])
+def admin_denie_register(request):
+    request_body = json.loads(request.body)
+    auth = request_body["auth"]
+    register_id = request_body["register_id"]
+
+
+    try:
+        admin = Account.objects.get(id=auth)
+    except:
+        return HttpResponse(
+            content=json.dumps({"error": "Invalid auth"}),
+            content_type="application/json",
+            status=200,
+        )
+
+    if admin.role != "admin":
+        return HttpResponse(
+            content=json.dumps({"error": "You are not an admin"}),
+            content_type="application/json",
+            status=200,
+        )
+    
+    try:
+        register = Register.objects.get(id = register_id)
+    except:
+        return HttpResponse(
+            content=json.dumps({"error": "This register is not exist"}),
+            content_type="application/json",
+            status=200,
+        )
+    
+    if register.status != "pending" :
+        return HttpResponse(
+            content=json.dumps({"error": "This register is not pending"}),
+            content_type="application/json",
+            status=200,
+        )
+    
+    register.status = "Denied"
+    
+    return HttpResponse(
+            content=json.dumps("Successful"),
+            content_type="application/json",
+            status=200,
+        )
