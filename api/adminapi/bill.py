@@ -1,11 +1,11 @@
 from django.http import HttpResponse
 from ..models import *
-import json
+import json, datetime
 from django.views.decorators.http import require_http_methods
 
 
 @require_http_methods(["POST"])
-def admin_show_registers(request):
+def admin_get_bills(request):
     request_body = json.loads(request.body)
     auth = request_body["auth"]
 
@@ -25,42 +25,51 @@ def admin_show_registers(request):
             status=200,
         )
 
-    registers = Register.objects.all()
-    res_registers = []
+    bills = Bill.objects.all()
+    res_bills = []
 
-    for register in registers:
-        res_registers.append(
+    for bill in bills:
+        res_bills.append(
             {
-                "id": str(register.id),
-                "request": str(register.request),
-                "status": str(register.status),
+                "id": str(bill.id),
+                "title": str(bill.title),
+                "create_at": str(bill.create_at),
                 "group": {
-                    "id": str(register.group.id),
-                    "name": str(register.group.name),
-                    "type": str(register.group.type),
+                    "id": str(bill.group.id),
+                    "name": str(bill.group.name),
+                    "type": str(bill.group.type),
                 },
                 "room": {
-                    "id": str(register.room.id),
-                    "name": str(register.room.name),
-                    "area": str(register.room.area),
-                    "price": str(register.room.price),
-                    "description": str(register.room.description),
+                    "id": str(bill.room.id),
+                    "name": str(bill.room.name),
+                    "area": str(bill.room.area),
+                    "price": str(bill.room.price),
+                    "description": str(bill.room.description),
                 },
+                "room_bill": str(bill.room_bill),
+                "electric_bill": str(bill.electric_bill),
+                "water_bill": str(bill.water_bill),
+                "donate": str(bill.donate),
+                "paid": str(bill.paid),
             }
         )
 
     return HttpResponse(
-        content=json.dumps({"registers": res_registers}),
+        content=json.dumps({"bills": res_bills}),
         content_type="application/json",
         status=200,
     )
 
 
 @require_http_methods(["POST"])
-def admin_accept_register(request):
+def admin_create_bill(request):
     request_body = json.loads(request.body)
     auth = request_body["auth"]
-    register_id = request_body["register_id"]
+    title = request_body["title"]
+    create_at = datetime.date.today()
+    room_id = request_body["room_id"]
+    electric_bill = request_body["electric_bill"]
+    water_bill = request_body["water_bill"]
 
     try:
         admin = Account.objects.get(id=auth)
@@ -79,48 +88,32 @@ def admin_accept_register(request):
         )
 
     try:
-        register = Register.objects.get(id=register_id)
+        room = Room.objects.get(id=room_id)
     except:
         return HttpResponse(
-            content=json.dumps({"error": "This register is not exist"}),
+            content=json.dumps({"error": "This room is not exist"}),
             content_type="application/json",
             status=200,
         )
 
-    if register.status != "pending":
+    if room.group == None:
         return HttpResponse(
-            content=json.dumps({"error": "This register is not pending"}),
+            content=json.dumps({"error": "This room isnt hired"}),
             content_type="application/json",
             status=200,
         )
 
-    group = register.group
-    room = register.room
+    bill = Bill(
+        title=title,
+        create_at=create_at,
+        room=room,
+        group=room.group,
+        room_bill=room.price,
+        electric_bill=electric_bill,
+        water_bill=water_bill,
+    )
 
-    if register.request == "hire":
-        try:
-            group.room
-            return HttpResponse(
-                content=json.dumps({"error": "This group was hired a room"}),
-                content_type="application/json",
-                status=200,
-            )
-        except:
-            if room.group == None:
-                room.group = group
-                room.save()
-            else:
-                return HttpResponse(
-                    content=json.dumps({"error": "This room has been hired"}),
-                    content_type="application/json",
-                    status=200,
-                )
-
-    if register.request == "unhire":
-        room.group = None
-
-    register.status = "Accepted"
-    register.save()
+    bill.save()
 
     return HttpResponse(
         content=json.dumps("Successful"),
@@ -130,10 +123,10 @@ def admin_accept_register(request):
 
 
 @require_http_methods(["POST"])
-def admin_deny_register(request):
+def admin_delete_bill(request):
     request_body = json.loads(request.body)
     auth = request_body["auth"]
-    register_id = request_body["register_id"]
+    bill_id = request_body["bill_id"]
 
     try:
         admin = Account.objects.get(id=auth)
@@ -152,25 +145,16 @@ def admin_deny_register(request):
         )
 
     try:
-        register = Register.objects.get(id=register_id)
+        bill = Bill.objects.get(id=bill_id)
+        bill.delete()
+        return HttpResponse(
+            content=json.dumps("Successful"),
+            content_type="application/json",
+            status=200,
+        )
     except:
         return HttpResponse(
-            content=json.dumps({"error": "This register is not exist"}),
+            content=json.dumps({"error": "Cant delete this bill"}),
             content_type="application/json",
             status=200,
         )
-
-    if register.status != "pending":
-        return HttpResponse(
-            content=json.dumps({"error": "This register is not pending"}),
-            content_type="application/json",
-            status=200,
-        )
-
-    register.status = "Denied"
-
-    return HttpResponse(
-        content=json.dumps("Successful"),
-        content_type="application/json",
-        status=200,
-    )

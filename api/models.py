@@ -54,7 +54,8 @@ class Register(models.Model):
 
 class Bill(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    date = models.DateField()
+    title = models.CharField(max_length=50, default="")
+    create_at = models.DateField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     room_bill = models.FloatField(default=0)

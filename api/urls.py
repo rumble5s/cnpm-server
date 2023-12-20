@@ -3,11 +3,13 @@ from .loginapi.login import *
 from .adminapi.group import *
 from .adminapi.room import *
 from .adminapi.register import *
+from .adminapi.bill import *
 
 from .userapi.person import *
 from .userapi.register import *
 from .userapi.transport import *
 from .userapi.room import *
+from .userapi.bill import *
 
 from django.urls import path
 
@@ -18,7 +20,6 @@ urlpatterns = [
     
     # Admin api
     path('admin_get_groups/',admin_get_groups),
-    path('admin_edit_group/',admin_edit_group),
 
     path('admin_get_rooms/',admin_get_rooms),
     path('admin_create_room/',admin_create_room),
@@ -28,6 +29,10 @@ urlpatterns = [
     path('admin_show_registers/',admin_show_registers),
     path('admin_accept_register/',admin_accept_register),
     path('admin_deny_register/',admin_deny_register),
+
+    path('admin_get_bills/',admin_get_bills),
+    path('admin_create_bill/',admin_create_bill),
+    path('admin_delete_bill/',admin_delete_bill),
 
     # User api
     path('add_person/',add_person),
@@ -43,5 +48,7 @@ urlpatterns = [
     path('get_transports/',get_transports),
     path('delete_transport/',delete_transport),
 
-    path('get_rooms/',get_rooms)
+    path('get_rooms/',get_rooms),
+
+    path('get_bills/',get_bills)
 ]
