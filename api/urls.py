@@ -49,6 +49,7 @@ urlpatterns = [
     path('delete_transport/',delete_transport),
 
     path('get_rooms/',get_rooms),
+    path('get_own_room/',get_own_room),
 
     path('get_bills/',get_bills)
 ]
