@@ -19,3 +19,32 @@ def get_rooms(request):
         content_type="application/json",
         status=200,
     )
+
+
+@require_http_methods(["POST"])
+def get_own_room(request):
+    request_body = json.loads(request.body)
+    group_id = request_body["group_id"]
+
+    try:
+        group = Group.objects.get(id=group_id)
+    except:
+        return HttpResponse(
+            content=json.dumps({"error": "This group is not exist"}),
+            content_type="application/json",
+            status=200,
+        )
+    
+    room = {
+        "id": str(group.room.id),
+        "name": str(group.room.name),
+        "area": str(group.room.area),
+        "price": str(group.room.price),
+        "description": str(group.room.description),
+    } if group.room else "null"
+
+    return HttpResponse(
+        content=json.dumps({"room": room}),
+        content_type="application/json",
+        status=200,
+    )
