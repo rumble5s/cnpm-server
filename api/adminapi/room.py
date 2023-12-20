@@ -25,14 +25,29 @@ def admin_get_rooms(request):
             status=200,
         )
 
-    rooms = Room.objects.all().values()
-    rooms = list(rooms)
+    rooms = Room.objects.all()
+    res_rooms = []
+
     for room in rooms:
-        room["id"] = str(room["id"])
-        room["group_id"] = str(room["group_id"])
+        res_rooms.append(
+            {
+                "id": str(room.id),
+                "name": str(room.name),
+                "area": str(room.area),
+                "price": str(room.price),
+                "description": str(room.description),
+                "group": {
+                    "id": str(room.group.id),
+                    "name": str(room.group.name),
+                    "type": str(room.group.type),
+                }
+                if room.group
+                else "null",
+            }
+        )
 
     return HttpResponse(
-        content=json.dumps({"rooms": rooms}),
+        content=json.dumps({"rooms": res_rooms}),
         content_type="application/json",
         status=200,
     )

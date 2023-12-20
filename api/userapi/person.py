@@ -3,33 +3,34 @@ from ..models import *
 import json
 from django.views.decorators.http import require_http_methods
 
+
 @require_http_methods(["POST"])
 def add_person(request):
-    citizen_identification_card = request.POST.get('citizen_identification_card')
-    avatar = request.FILES.get('avatar')
-    name = request.POST.get('name')
-    date_of_birth = request.POST.get('date_of_birth')
-    phone = request.POST.get('phone')
-    email = request.POST.get('email')
-    group_id = request.POST.get('group_id')
-    
+    citizen_identification_card = request.POST.get("citizen_identification_card")
+    avatar = request.FILES.get("avatar")
+    name = request.POST.get("name")
+    date_of_birth = request.POST.get("date_of_birth")
+    phone = request.POST.get("phone")
+    email = request.POST.get("email")
+    group_id = request.POST.get("group_id")
+
     try:
-        group = Group.objects.get(id = group_id)
+        group = Group.objects.get(id=group_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This group is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
+
     person = Person(
-        citizen_identification_card = citizen_identification_card,
-        avatar = avatar,
-        name = name,
-        date_of_birth = date_of_birth,
-        phone = phone,
-        email = email,
-        group = group
+        citizen_identification_card=citizen_identification_card,
+        avatar=avatar,
+        name=name,
+        date_of_birth=date_of_birth,
+        phone=phone,
+        email=email,
+        group=group,
     )
 
     person.save()
@@ -47,15 +48,15 @@ def get_persons(request):
     group_id = request_body["group_id"]
 
     try:
-        group = Group.objects.get(id = group_id)
+        group = Group.objects.get(id=group_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This group is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
-    persons = Person.objects.filter(group = group).values()
+
+    persons = Person.objects.filter(group=group).values()
     persons = list(persons)
 
     for person in persons:
@@ -72,23 +73,23 @@ def get_persons(request):
 
 @require_http_methods(["POST"])
 def edit_person(request):
-    person_id = request.POST.get('person_id')
-    citizen_identification_card = request.POST.get('citizen_identification_card')
-    avatar = request.FILES.get('avatar')
-    name = request.POST.get('name')
-    date_of_birth = request.POST.get('date_of_birth')
-    phone = request.POST.get('phone')
-    email = request.POST.get('email')
-    
+    person_id = request.POST.get("person_id")
+    citizen_identification_card = request.POST.get("citizen_identification_card")
+    avatar = request.FILES.get("avatar")
+    name = request.POST.get("name")
+    date_of_birth = request.POST.get("date_of_birth")
+    phone = request.POST.get("phone")
+    email = request.POST.get("email")
+
     try:
-        person = Person.objects.get(id = person_id)
+        person = Person.objects.get(id=person_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This person is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
+
     person.citizen_identification_card = citizen_identification_card
     person.avatar = avatar
     person.name = name
@@ -111,18 +112,18 @@ def delete_person(request):
     person_id = request_body["person_id"]
 
     try:
-        person = Person.objects.get(id = person_id)
+        person = Person.objects.get(id=person_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This person is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
+
     person.delete()
 
     return HttpResponse(
-            content=json.dumps("Successful"),
-            content_type="application/json",
-            status=200,
-        )
+        content=json.dumps("Successful"),
+        content_type="application/json",
+        status=200,
+    )

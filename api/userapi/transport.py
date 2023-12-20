@@ -11,25 +11,23 @@ def add_transport(request):
     type = request_body["type"]
     group_id = request_body["group_id"]
 
-
     try:
-        group = Group.objects.get(id = group_id)
+        group = Group.objects.get(id=group_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This group is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
 
-    transport = Transport(number_plate = number_plate,type = type , group = group)
+    transport = Transport(number_plate=number_plate, type=type, group=group)
     transport.save()
 
     return HttpResponse(
-            content=json.dumps("Successful"),
-            content_type="application/json",
-            status=200,
-        )
+        content=json.dumps("Successful"),
+        content_type="application/json",
+        status=200,
+    )
 
 
 @require_http_methods(["POST"])
@@ -38,15 +36,15 @@ def get_transports(request):
     group_id = request_body["group_id"]
 
     try:
-        group = Group.objects.get(id = group_id)
+        group = Group.objects.get(id=group_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This group is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
-    transports = Transport.objects.filter(group = group).values()
+
+    transports = Transport.objects.filter(group=group).values()
     transports = list(transports)
 
     for transport in transports:
@@ -66,19 +64,18 @@ def delete_transport(request):
     transport_id = request_body["transport_id"]
 
     try:
-        transport = Transport.objects.get(id = transport_id)
+        transport = Transport.objects.get(id=transport_id)
     except:
         return HttpResponse(
             content=json.dumps({"error": "This transport is not exist"}),
             content_type="application/json",
             status=200,
         )
-    
+
     transport.delete()
 
     return HttpResponse(
-            content=json.dumps("Successful"),
-            content_type="application/json",
-            status=200,
-        )
-    
+        content=json.dumps("Successful"),
+        content_type="application/json",
+        status=200,
+    )
