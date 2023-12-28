@@ -34,14 +34,18 @@ def get_own_room(request):
             content_type="application/json",
             status=200,
         )
-    
-    room = {
-        "id": str(group.room.id),
-        "name": str(group.room.name),
-        "area": str(group.room.area),
-        "price": str(group.room.price),
-        "description": str(group.room.description),
-    } if group.room else "null"
+
+    try:
+        group.room
+        room = {
+            "id": str(group.room.id),
+            "name": str(group.room.name),
+            "area": str(group.room.area),
+            "price": str(group.room.price),
+            "description": str(group.room.description),
+        }
+    except:
+        room = "null"
 
     return HttpResponse(
         content=json.dumps({"room": room}),
