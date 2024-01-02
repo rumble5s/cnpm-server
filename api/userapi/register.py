@@ -110,6 +110,13 @@ def delete_register(request):
             content_type="application/json",
             status=200,
         )
+    
+    if register.status != "pending":
+        return HttpResponse(
+            content=json.dumps({"error": "This register is not pending"}),
+            content_type="application/json",
+            status=200,
+        )
 
     register.delete()
 

@@ -33,6 +33,7 @@ urlpatterns = [
     path('admin_get_bills/',admin_get_bills),
     path('admin_create_bill/',admin_create_bill),
     path('admin_delete_bill/',admin_delete_bill),
+    path('admin_accept_bill/',admin_accept_bill),
 
     # User api
     path('add_person/',add_person),
