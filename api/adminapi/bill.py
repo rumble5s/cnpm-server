@@ -146,6 +146,14 @@ def admin_delete_bill(request):
 
     try:
         bill = Bill.objects.get(id=bill_id)
+
+        if bill.paid == True:
+            return HttpResponse(
+                content=json.dumps({"error": "This bill has been paid"}),
+                content_type="application/json",
+                status=200,
+            )
+
         bill.delete()
         return HttpResponse(
             content=json.dumps("Successful"),
@@ -155,6 +163,55 @@ def admin_delete_bill(request):
     except:
         return HttpResponse(
             content=json.dumps({"error": "Cant delete this bill"}),
+            content_type="application/json",
+            status=200,
+        )
+
+
+@require_http_methods(["POST"])
+def admin_accept_bill(request):
+    request_body = json.loads(request.body)
+    auth = request_body["auth"]
+    bill_id = request_body["bill_id"]
+    donate = request_body["donate"]
+
+    try:
+        admin = Account.objects.get(id=auth)
+    except:
+        return HttpResponse(
+            content=json.dumps({"error": "Invalid auth"}),
+            content_type="application/json",
+            status=200,
+        )
+
+    if admin.role != "admin":
+        return HttpResponse(
+            content=json.dumps({"error": "You are not an admin"}),
+            content_type="application/json",
+            status=200,
+        )
+
+    try:
+        bill = Bill.objects.get(id=bill_id)
+
+        if bill.paid == True:
+            return HttpResponse(
+                content=json.dumps({"error": "This bill has been paid"}),
+                content_type="application/json",
+                status=200,
+            )
+
+        bill.paid = True
+        bill.donate = donate
+        bill.save()
+        return HttpResponse(
+            content=json.dumps("Successful"),
+            content_type="application/json",
+            status=200,
+        )
+    except:
+        return HttpResponse(
+            content=json.dumps({"error": "Cant accept this bill"}),
             content_type="application/json",
             status=200,
         )

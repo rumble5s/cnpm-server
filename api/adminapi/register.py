@@ -168,7 +168,8 @@ def admin_deny_register(request):
         )
 
     register.status = "Denied"
-
+    register.save()
+    
     return HttpResponse(
         content=json.dumps("Successful"),
         content_type="application/json",
